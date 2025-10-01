@@ -1,0 +1,27 @@
+:root {
+  --primary-color: #4f46e5;
+  --primary-light: #6366f1;
+  --accent-color: #3b82f6;
+  --bg-light: #f9fafc;
+  --text-dark: #1e293b;
+  --text-light: #64748b;
+  --border-color: #e2e8f0;
+  --radius: 12px;
+  --transition: all 0.25s ease-in-out;
+}
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+a {
+  text-decoration: none;
+  color: var(--text-dark);
+  transition: var(--transition);
+}
+a:hover {
+  color: var(--primary-color);
+}

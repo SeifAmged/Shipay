@@ -1,0 +1,40 @@
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  min-width: 260px;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  font-weight: 500;
+  z-index: 2000;
+}
+.toast.success {
+  background: linear-gradient(45deg, #22c55e, #16a34a);
+}
+.toast.error {
+  background: linear-gradient(45deg, #ef4444, #dc2626);
+}
+.toast.warning {
+  background: linear-gradient(45deg, #f59e0b, #d97706);
+}
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.toast-close {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.toast-close:hover {
+  transform: scale(1.2);
+}

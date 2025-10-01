@@ -1,0 +1,145 @@
+.app-header {
+  background: white;
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+/* Ensure logo is hard-left and links are hard-right inside nav */
+.app-header nav {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.nav-logo a {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+.nav-logo {
+  margin-right: auto;
+}
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  margin-left: auto;
+}
+.nav-links a {
+  font-weight: 500;
+  color: var(--text-light);
+}
+.nav-links a:hover {
+  color: var(--primary-color);
+}
+.logout-button {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.logout-button:hover {
+  background: var(--primary-light);
+}
+.main-content {
+  padding: 2rem 3rem;
+  min-height: 70vh;
+}
+/* Popup toast styles for reveal messages */
+.popup-toast {
+  position: fixed !important;
+  top: 80px !important;
+  right: 20px !important;
+  left: auto !important;
+  padding: 12px 18px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  color: white;
+  font-weight: 600;
+  z-index: 99999 !important;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  max-width: 300px;
+  word-wrap: break-word;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+.popup-toast.info {
+  background: linear-gradient(45deg, #0ea5e9, #0284c7);
+}
+.popup-toast.danger {
+  background: linear-gradient(45deg, #ef4444, #dc2626);
+}
+footer {
+  background: white;
+  border-top: 1px solid var(--border-color);
+  padding: 2rem 3rem;
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+.app-footer .footer-inner {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+.app-footer .brand-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.app-footer .brand-logo {
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--primary-color);
+}
+.app-footer .brand-icon {
+  color: var(--primary-color);
+}
+.app-footer .brand-tagline {
+  margin-top: 0.5rem;
+}
+.app-footer h4 {
+  margin: 0 0 0.75rem 0;
+  color: var(--text-dark);
+}
+.app-footer .links-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+.app-footer .footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-light);
+  transition: var(--transition);
+}
+.app-footer .footer-link:hover {
+  color: var(--primary-color);
+  transform: translateX(2px);
+}
+.app-footer .contact-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+}
+.app-footer .contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.app-footer .footer-bottom {
+  margin-top: 1.5rem;
+  border-top: 1px dashed var(--border-color);
+  padding-top: 1rem;
+  text-align: center;
+}

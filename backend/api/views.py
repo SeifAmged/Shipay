@@ -1,12 +1,8 @@
 """
-Shipay API Views
+API Views for the Shipay fintech application.
 
-This module contains all API endpoints for the Shipay fintech application.
-It handles user authentication, wallet operations, and transaction management
-with proper security measures and validation.
-
-Author: Shipay Development Team
-Version: 1.0.0
+This module contains all REST API endpoints for user authentication, wallet operations,
+and transaction management with comprehensive security measures and validation.
 """
 
 from django.shortcuts import render
@@ -20,7 +16,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 import django_filters
-from decimal import Decimal  # Required for precise decimal calculations in financial operations
+from decimal import Decimal
 
 from .models import Wallet, Transaction
 from .serializers import (
@@ -188,10 +184,27 @@ class DepositView(generics.GenericAPIView):
         return Response(WalletSerializer(wallet).data, status=status.HTTP_200_OK)
 
 class WithdrawView(generics.GenericAPIView):
+    """
+    Withdraw funds from user's wallet.
+    
+    Allows authenticated users to withdraw funds from their wallet with
+    comprehensive validation and atomic database operations to ensure
+    data consistency and prevent insufficient balance withdrawals.
+    
+    Endpoint: POST /api/wallet/withdraw/
+    Request Body:
+        - amount: Decimal amount to withdraw (must be positive and not exceed balance)
+    """
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = WithdrawSerializer
 
     def post(self, request, *args, **kwargs):
+        """
+        Process withdrawal transaction.
+        
+        Validates the withdrawal amount against available balance and updates
+        the user's wallet balance atomically to ensure data consistency.
+        """
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -211,10 +224,29 @@ class WithdrawView(generics.GenericAPIView):
         return Response(WalletSerializer(wallet).data, status=status.HTTP_200_OK)
 
 class TransferView(generics.GenericAPIView):
+    """
+    Transfer funds between user wallets.
+    
+    Allows authenticated users to transfer funds to other users with
+    comprehensive validation including recipient verification, balance
+    checking, and self-transfer prevention.
+    
+    Endpoint: POST /api/wallet/transfer/
+    Request Body:
+        - recipient_username: Username of the recipient user
+        - amount: Decimal amount to transfer (must be positive and not exceed balance)
+    """
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = TransferSerializer
 
     def post(self, request, *args, **kwargs):
+        """
+        Process transfer transaction between users.
+        
+        Validates recipient existence, prevents self-transfers, checks
+        sufficient balance, and performs atomic transfer operations
+        to ensure data consistency across both wallets.
+        """
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -236,6 +268,7 @@ class TransferView(generics.GenericAPIView):
             return Response({"error": "Recipient user not found."}, status=status.HTTP_404_NOT_FOUND)
 
         with transaction.atomic():
+            # Deduct from sender
             sender_wallet.balance -= amount
             sender_wallet.save()
             Transaction.objects.create(
@@ -243,6 +276,7 @@ class TransferView(generics.GenericAPIView):
                 counterparty=recipient_username, status='completed'
             )
 
+            # Add to recipient
             recipient_wallet.balance += amount
             recipient_wallet.save()
             Transaction.objects.create(
@@ -251,24 +285,42 @@ class TransferView(generics.GenericAPIView):
             )
         return Response({"success": f"Successfully transferred {amount} to {recipient_username}."}, status=status.HTTP_200_OK)
 
-# NEW: Reveal Balance View
 class RevealBalanceView(generics.GenericAPIView):
+    """
+    Premium balance reveal feature with usage limits and fees.
+    
+    Allows users to reveal their wallet balance with a freemium model:
+    - First 3 reveals per day are free
+    - Additional reveals cost 10 EGP each
+    - Usage resets daily at midnight
+    
+    Endpoint: POST /api/wallet/reveal-balance/
+    """
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        """
+        Process balance reveal request with fee calculation.
+        
+        Tracks daily usage, applies fees for premium reveals, and returns
+        current balance along with remaining free reveals for the day.
+        """
         wallet = request.user.wallet
         today = timezone.now().date()
         fee = Decimal('10.00')
         free_reveals_left = 3 - wallet.balance_reveal_count
 
         with transaction.atomic():
+            # Reset daily counter if it's a new day
             if wallet.last_balance_reveal != today:
                 wallet.balance_reveal_count = 0
                 free_reveals_left = 3
 
+            # Increment reveal count
             wallet.balance_reveal_count += 1
             wallet.last_balance_reveal = today
 
+            # Apply fee for premium reveals (beyond 3 free per day)
             fee_deducted = False
             if wallet.balance_reveal_count > 3:
                 if wallet.balance < fee:

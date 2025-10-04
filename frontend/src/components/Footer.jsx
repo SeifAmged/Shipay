@@ -1,3 +1,13 @@
+/**
+ * Footer component for the Shipay application.
+ * 
+ * Provides site-wide footer with:
+ * - Brand information and tagline
+ * - Quick navigation links to main features
+ * - Contact information and support details
+ * - Copyright and branding information
+ */
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaShieldAlt, FaPaperPlane, FaHistory, FaMoneyBillWave, FaEnvelope, FaPhone } from 'react-icons/fa';
@@ -6,15 +16,19 @@ export default function Footer() {
   return (
     <footer className="app-footer">
       <div className="footer-inner">
+        {/* Brand section with logo and description */}
         <div className="footer-brand">
           <div className="brand-row">
             <span className="brand-logo">Shipay</span>
             <FaShieldAlt className="brand-icon" />
           </div>
-          <p className="brand-tagline">Shipay
-          Your secure and simple digital wallet. Manage your funds with ease and confidence — because your money deserves technology that moves as fast as you do.</p>
+          <p className="brand-tagline">
+            Your secure and simple digital wallet. Manage your funds with ease and confidence — 
+            because your money deserves technology that moves as fast as you do.
+          </p>
         </div>
 
+        {/* Quick navigation links */}
         <div className="footer-links">
           <h4>Quick Links</h4>
           <nav className="links-grid">
@@ -37,6 +51,7 @@ export default function Footer() {
           </nav>
         </div>
 
+        {/* Contact information section */}
         <div className="footer-contact">
           <h4>Contact Us</h4>
           <div className="contact-list">

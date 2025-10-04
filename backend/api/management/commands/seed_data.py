@@ -1,3 +1,10 @@
+"""
+Django management command for database seeding.
+
+This command populates the database with realistic test data including
+users, wallets, and transaction history for development and testing purposes.
+"""
+
 import random
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -12,20 +19,32 @@ from api.signals import create_wallet_and_give_bonus
 
 
 class Command(BaseCommand):
+    """
+    Management command for seeding the database with test data.
+    
+    Creates 20 realistic users with wallets, generates 100 transactions
+    per user, and sets up the bonus bot system for welcome bonuses.
+    """
     help = 'Seeds the database with 20 realistic users, 100 transactions each, and a bonus bot.'
 
     def handle(self, *args, **kwargs):
+        """
+        Execute the database seeding process.
+        
+        Creates users, wallets, transactions, and bonus bot with proper
+        signal management to prevent conflicts during bulk operations.
+        """
         self.stdout.write(self.style.SUCCESS('🚀 Starting large database seeding process...'))
 
-        # 1️⃣ Temporarily disable the wallet creation signal
+        # Temporarily disable wallet creation signal to prevent conflicts
         post_save.disconnect(create_wallet_and_give_bonus, sender=User)
         self.stdout.write('🔌 Welcome bonus signal DISCONNECTED for seeding.')
 
         with transaction.atomic():
-            # 2️⃣ Clean existing non-superusers
+            # Clean existing non-superuser data
             User.objects.filter(is_superuser=False).delete()
 
-            # 3️⃣ Create the bonus bot
+            # Create the bonus bot user for welcome bonuses
             self.stdout.write('🤖 Creating the bonus bot user...')
             bonus_bot, created = User.objects.get_or_create(username='shipay_bonus_bot')
             if created:
@@ -37,7 +56,7 @@ class Command(BaseCommand):
             bot_wallet.save()
             self.stdout.write('✅ Bonus bot is ready with full balance.')
 
-            # 4️⃣ Generate random users
+            # Generate realistic user data
             first_names = [
                 'Ahmed', 'Mohamed', 'Mahmoud', 'Ali', 'Khaled', 'Youssef', 'Omar', 'Amr',
                 'Tarek', 'Mostafa', 'Hassan', 'Hussein', 'Ibrahim', 'Karim', 'Mazen',
@@ -66,7 +85,7 @@ class Command(BaseCommand):
 
             self.stdout.write(f'✅ {len(users)} users created and funded.')
 
-            # 5️⃣ Generate realistic transactions
+            # Generate realistic transaction history
             self.stdout.write('💸 Creating 100 transactions for each user...')
             start_date = timezone.make_aware(datetime(2024, 1, 1))
             end_date = timezone.now()
@@ -118,7 +137,7 @@ class Command(BaseCommand):
 
             self.stdout.write(f'✅ {len(users) * 100} total transactions created successfully.')
 
-        # 6️⃣ Reconnect the signal
+        # Reconnect the signal for normal operation
         post_save.connect(create_wallet_and_give_bonus, sender=User)
         self.stdout.write('🔁 Welcome bonus signal RECONNECTED for live usage.')
 

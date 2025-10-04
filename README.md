@@ -1,18 +1,17 @@
 # 🚀 Shipay - Professional Digital Wallet Platform
 
 <div align="center">
+  <img src="https://github.com/SeifAmged/Shipay/blob/main/frontend/public/favicon.png?raw=true" alt="Shipay Logo" width="120"/>
 
-![Shipay Logo](https://via.placeholder.com/200x80/4f46e5/ffffff?text=SHIPAY)
+  <p><strong>A modern, enterprise-grade digital wallet application built with React and Django</strong></p>
 
-**A modern, enterprise-grade digital wallet application built with React and Django**
-
-[![Django](https://img.shields.io/badge/Django-5.2.6-green.svg)](https://djangoproject.com/)
-[![React](https://img.shields.io/badge/React-18.0-blue.svg)](https://reactjs.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue.svg)](https://postgresql.org/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://docker.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-
+  <a href="https://djangoproject.com/"><img src="https://img.shields.io/badge/Django-5.2.6-green.svg" alt="Django Badge"/></a>
+  <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React-18.0-blue.svg" alt="React Badge"/></a>
+  <a href="https://postgresql.org/"><img src="https://img.shields.io/badge/PostgreSQL-15-blue.svg" alt="PostgreSQL Badge"/></a>
+  <a href="https://docker.com/"><img src="https://img.shields.io/badge/Docker-Ready-blue.svg" alt="Docker Badge"/></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License Badge"/></a>
 </div>
+
 
 ## ✨ Features
 
@@ -103,7 +102,7 @@ The easiest way to get Shipay running is with Docker:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/shipay.git
+   git clone https://github.com/SeifAmged/Shipay.git
    cd shipay
    ```
 
@@ -573,7 +572,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 🆘 Support & Community
 
 ### 📞 Getting Help
-- **GitHub Issues**: [Report bugs or request features](https://github.com/yourusername/shipay/issues)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/SeifAmged/Shipay/issues)
 - **Documentation**: Check this README and [DEPLOYMENT.md](DEPLOYMENT.md)
 - **Discussions**: Use GitHub Discussions for questions
 
@@ -605,8 +604,8 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 **Built with ❤️ by the Shipay Development Team**
 
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/yourusername/shipay)
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](https://hub.docker.com/r/yourusername/shipay)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/SeifAmged/Shipay)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](https://github.com/SeifAmged/Shipay)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 *Professional fintech solutions for the modern world*

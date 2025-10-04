@@ -1,16 +1,39 @@
+/**
+ * Language context for managing internationalization (i18n) state.
+ * 
+ * Provides language switching functionality with:
+ * - Persistent language preference in localStorage
+ * - Bilingual support (English/Arabic)
+ * - Translation function for text content
+ * - Automatic language persistence across sessions
+ */
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const LanguageContext = createContext();
 
+/**
+ * Language provider component.
+ * 
+ * Manages global language state and provides translation
+ * functionality to child components through React context.
+ * 
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components
+ */
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => {
     return localStorage.getItem('shipay-language') || 'en';
   });
 
+  // Persist language preference to localStorage
   useEffect(() => {
     localStorage.setItem('shipay-language', language);
   }, [language]);
 
+  /**
+   * Toggles between English and Arabic languages.
+   */
   const toggleLanguage = () => {
     setLanguage(prev => prev === 'en' ? 'ar' : 'en');
   };
@@ -212,6 +235,12 @@ export const LanguageProvider = ({ children }) => {
     }
   };
 
+  /**
+   * Translation function that returns the appropriate text for the current language.
+   * 
+   * @param {string} key - Translation key
+   * @returns {string} Translated text or key if translation not found
+   */
   const t = (key) => translations[language][key] || key;
 
   return (
@@ -221,6 +250,12 @@ export const LanguageProvider = ({ children }) => {
   );
 };
 
+/**
+ * Hook to access language context.
+ * 
+ * @returns {Object} Language context value with translation function
+ * @throws {Error} When used outside of LanguageProvider
+ */
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
   if (!context) {

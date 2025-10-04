@@ -1,3 +1,13 @@
+/**
+ * Login page component for user authentication.
+ * 
+ * Provides user login functionality with:
+ * - Form validation and error handling
+ * - Authentication state management
+ * - Internationalization support
+ * - Automatic redirect for authenticated users
+ */
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -13,12 +23,18 @@ export default function LoginPage() {
     const { t } = useLanguage();
     const navigate = useNavigate();
 
+    // Redirect authenticated users to dashboard
     useEffect(() => {
         if (localStorage.getItem('token')) {
             navigate('/dashboard', { replace: true });
         }
     }, [navigate]);
 
+    /**
+     * Handles form input changes and clears field-specific errors.
+     * 
+     * @param {Event} e - Input change event
+     */
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -29,6 +45,11 @@ export default function LoginPage() {
         }
     };
 
+    /**
+     * Handles form submission with validation and authentication.
+     * 
+     * @param {Event} e - Form submit event
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');

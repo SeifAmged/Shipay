@@ -1,4 +1,11 @@
-# api/exceptions.py
+"""
+Custom exception handlers for the Shipay fintech application.
+
+This module provides custom exception handling for Django REST Framework
+to provide consistent error responses and integrate with Django Axes
+security middleware.
+"""
+
 from rest_framework.views import exception_handler
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,44 +14,50 @@ from rest_framework.exceptions import AuthenticationFailed, NotAuthenticated
 
 def custom_exception_handler(exc, context):
     """
-    Custom DRF exception handler:
-    - If the request has axes_is_locked_out (set by django-axes middleware), return 403 lockout message.
-    - If PermissionDenied occurs (often axes lockout), return lockout message.
-    - If AuthenticationFailed -> return 401 with credentials message.
-    - If NotAuthenticated -> return 401 with 'credentials not provided'.
-    - Else -> fallback to DRF default response.
+    Custom DRF exception handler with Django Axes integration.
+    
+    Provides consistent error responses for various authentication and
+    authorization scenarios including account lockouts and credential issues.
+    
+    Args:
+        exc: The exception that was raised
+        context: Dictionary containing request context information
+        
+    Returns:
+        Response: Custom error response or fallback to default DRF response
     """
-    # first run the default handler
+    # Run the default DRF exception handler first
     response = exception_handler(exc, context)
 
     request = context.get('request') if context else None
 
-    # If django-axes middleware flagged the request as locked out
+    # Handle account lockout from Django Axes
     if request and getattr(request, 'axes_is_locked_out', False):
         return Response(
             {"detail": "Account locked: Too many failed login attempts. Please try again later."},
             status=status.HTTP_403_FORBIDDEN
         )
 
-    # Some versions may raise PermissionDenied for lockouts — treat as lockout
+    # Handle PermissionDenied exceptions (often from Axes lockouts)
     if isinstance(exc, PermissionDenied):
         return Response(
             {"detail": "Account locked: Too many failed login attempts. Please try again later."},
             status=status.HTTP_403_FORBIDDEN
         )
 
-    # Wrong credentials -> 401
+    # Handle authentication failures
     if isinstance(exc, AuthenticationFailed):
         return Response(
             {"detail": "No active account found with the given credentials."},
             status=status.HTTP_401_UNAUTHORIZED
         )
 
+    # Handle missing authentication credentials
     if isinstance(exc, NotAuthenticated):
         return Response(
             {"detail": "Authentication credentials were not provided."},
             status=status.HTTP_401_UNAUTHORIZED
         )
 
-    # fallback to whatever DRF returned (might be None)
+    # Return default DRF response for other exceptions
     return response

@@ -1,3 +1,14 @@
+/**
+ * ESLint configuration for the Shipay frontend application.
+ * 
+ * Configures code linting with:
+ * - JavaScript recommended rules
+ * - React Hooks linting rules
+ * - React Refresh plugin for Vite
+ * - Custom rules for unused variables
+ * - Browser globals support
+ */
+
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
@@ -5,6 +16,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
+  // Ignore build output directory
   globalIgnores(['dist']),
   {
     files: ['**/*.{js,jsx}'],
@@ -23,6 +35,7 @@ export default defineConfig([
       },
     },
     rules: {
+      // Allow unused variables that start with uppercase or are named 'motion'
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]|^motion$' }],
     },
   },

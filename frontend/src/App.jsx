@@ -1,9 +1,19 @@
+/**
+ * Main App component for the Shipay fintech application.
+ * 
+ * This component serves as the root layout wrapper that provides:
+ * - Navigation bar with authentication-aware menu items
+ * - Language switching functionality
+ * - Page transition animations using Framer Motion
+ * - Route outlet for rendering child components
+ */
+
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { useLanguage } from './context/LanguageContext';
 import { AnimatePresence, motion } from 'framer-motion';
 import Footer from './components/Footer';
-import './App.css'; // Import the main stylesheet
+import './App.css';
 import './styles/globals.css';
 import './styles/layout.css';
 import './styles/toast.css';
@@ -14,6 +24,10 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  /**
+   * Handles user logout and redirects to login page.
+   * Clears authentication state and navigates away from protected routes.
+   */
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -57,6 +71,7 @@ function App() {
         </nav>
       </header>
 
+      {/* Page transition wrapper with smooth animations */}
       <AnimatePresence mode="wait">
         <motion.main
           key={location.pathname}
@@ -71,7 +86,7 @@ function App() {
             y: { duration: 0.6 }
           }}
           onAnimationComplete={() => {
-            // Smooth scroll to top on route change
+            // Scroll to top when navigating between pages
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         >

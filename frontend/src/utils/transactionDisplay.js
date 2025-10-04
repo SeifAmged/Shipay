@@ -1,10 +1,27 @@
-// Transaction display utility for consistent formatting across all pages
+/**
+ * Transaction display utilities for consistent formatting across the application.
+ * 
+ * Provides functions for:
+ * - Determining transaction direction (incoming/outgoing)
+ * - Formatting transaction amounts with proper signs
+ * - Generating display text and CSS classes
+ * - Creating user-friendly transaction type descriptions
+ */
 
 /**
- * Determines if a transaction is outgoing (negative) or incoming (positive)
- * @param {Object} transaction - Transaction object
- * @param {string} currentUsername - Current user's username
- * @returns {Object} - { isOutgoing: boolean, displayAmount: number, displaySign: string }
+ * Determines transaction direction and formatting information.
+ * 
+ * Analyzes transaction data to determine if it represents money coming in
+ * or going out from the user's perspective, with appropriate formatting.
+ * 
+ * @param {Object} transaction - Transaction object from API
+ * @param {string} currentUsername - Current user's username for context
+ * @returns {Object} Display information object
+ * @returns {boolean} returns.isOutgoing - Whether transaction represents outgoing money
+ * @returns {number} returns.displayAmount - Absolute amount for display
+ * @returns {string} returns.displaySign - Sign to display ('+' or '-')
+ * @returns {string} returns.formattedAmount - Formatted amount string
+ * @returns {string} returns.cssClass - CSS class for styling
  */
 export const getTransactionDisplayInfo = (transaction, currentUsername) => {
     const { transaction_type, amount, counterparty } = transaction;
@@ -15,33 +32,33 @@ export const getTransactionDisplayInfo = (transaction, currentUsername) => {
     
     switch (transaction_type) {
         case 'deposit':
-            // Deposits are always incoming (positive)
+            // Deposits always represent money coming in
             isOutgoing = false;
             displaySign = '+';
             break;
             
         case 'withdraw':
-            // Withdrawals are always outgoing (negative)
+            // Withdrawals always represent money going out
             isOutgoing = true;
             displaySign = '-';
             break;
             
         case 'transfer':
-            // For transfers, determine if we're the sender or recipient based on amount sign
-            // Backend logic: sender gets negative amount, recipient gets positive amount
+            // Transfer direction determined by amount sign
+            // Backend: sender gets negative amount, recipient gets positive
             if (amount < 0) {
-                // We sent money to someone else (outgoing)
+                // User sent money to someone else
                 isOutgoing = true;
                 displaySign = '-';
             } else {
-                // Someone sent money to us (incoming)
+                // Someone sent money to user
                 isOutgoing = false;
                 displaySign = '+';
             }
             break;
             
         default:
-            // Default to positive for unknown types
+            // Default to positive for unknown transaction types
             isOutgoing = false;
             displaySign = '+';
     }
@@ -56,11 +73,14 @@ export const getTransactionDisplayInfo = (transaction, currentUsername) => {
 };
 
 /**
- * Formats transaction amount for display
- * @param {Object} transaction - Transaction object
- * @param {string} currentUsername - Current user's username
+ * Formats transaction amount with currency for display.
+ * 
+ * @param {Object} transaction - Transaction object from API
+ * @param {string} currentUsername - Current user's username for context
  * @param {string} currency - Currency symbol (default: 'EGP')
- * @returns {Object} - { formattedText: string, cssClass: string }
+ * @returns {Object} Formatted amount information
+ * @returns {string} returns.formattedText - Formatted amount with currency
+ * @returns {string} returns.cssClass - CSS class for styling
  */
 export const formatTransactionAmount = (transaction, currentUsername, currency = 'EGP') => {
     const { formattedAmount, cssClass } = getTransactionDisplayInfo(transaction, currentUsername);
@@ -72,10 +92,14 @@ export const formatTransactionAmount = (transaction, currentUsername, currency =
 };
 
 /**
- * Gets transaction type display name
- * @param {Object} transaction - Transaction object
- * @param {string} currentUsername - Current user's username
- * @returns {string} - Display name for transaction type
+ * Generates user-friendly transaction type display text.
+ * 
+ * Creates descriptive text that clearly indicates the transaction
+ * direction and counterparty for better user understanding.
+ * 
+ * @param {Object} transaction - Transaction object from API
+ * @param {string} currentUsername - Current user's username for context
+ * @returns {string} Human-readable transaction type description
  */
 export const getTransactionTypeDisplay = (transaction, currentUsername) => {
     const { transaction_type, counterparty, amount } = transaction;
@@ -86,12 +110,12 @@ export const getTransactionTypeDisplay = (transaction, currentUsername) => {
         case 'withdraw':
             return 'Withdrawal';
         case 'transfer':
-            // For transfers, determine direction based on amount sign
+            // Determine transfer direction based on amount sign
             if (amount < 0) {
-                // We sent money to someone else (outgoing)
+                // User sent money to someone else
                 return `Transfer to ${counterparty}`;
             } else {
-                // Someone sent money to us (incoming)
+                // Someone sent money to user
                 return `Transfer from ${counterparty}`;
             }
         default:

@@ -1,3 +1,13 @@
+/**
+ * Authentication context for managing user authentication state.
+ * 
+ * Provides authentication functionality including:
+ * - User login/logout operations
+ * - JWT token management and refresh
+ * - Automatic token validation on app load
+ * - 401 error handling and automatic logout
+ */
+
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
@@ -6,6 +16,15 @@ import { setOnUnauthorized } from '../services/http';
 
 const AuthContext = createContext(null);
 
+/**
+ * Authentication provider component.
+ * 
+ * Manages global authentication state and provides authentication
+ * methods to child components through React context.
+ * 
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components
+ */
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
@@ -19,7 +38,7 @@ export const AuthProvider = ({ children }) => {
             try {
                 const decoded = jwtDecode(tokenInStorage);
                 if (decoded.exp * 1000 < Date.now()) {
-                    // Token expired, try to refresh
+                    // Token expired, attempt refresh
                     if (refreshTokenInStorage) {
                         refreshAccessToken();
                     } else {
@@ -27,17 +46,19 @@ export const AuthProvider = ({ children }) => {
                         localStorage.removeItem('refreshToken');
                     }
                 } else {
+                    // Token is valid, set user state
                     setUser({ username: decoded.username, id: decoded.user_id });
                     setToken(tokenInStorage);
                     setRefreshToken(refreshTokenInStorage);
                 }
             } catch {
+                // Invalid token, clear storage
                 localStorage.removeItem('token');
                 localStorage.removeItem('refreshToken');
             }
         }
         
-        // register 401 handler once
+        // Register global 401 error handler
         setOnUnauthorized(() => {
             setUser(null);
             setToken(null);
@@ -47,6 +68,12 @@ export const AuthProvider = ({ children }) => {
         });
     }, []);
 
+    /**
+     * Refreshes the access token using the stored refresh token.
+     * 
+     * @returns {Promise<string>} The new access token
+     * @throws {Error} When refresh fails or no refresh token available
+     */
     const refreshAccessToken = async () => {
         try {
             const refreshTokenInStorage = localStorage.getItem('refreshToken');
@@ -80,6 +107,14 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    /**
+     * Authenticates user with username and password.
+     * 
+     * @param {string} username - User's username
+     * @param {string} password - User's password
+     * @returns {Promise<Object>} Login response data
+     * @throws {Error} When login fails
+     */
     const login = async (username, password) => {
         const response = await authService.login(username, password);
         if (response && response.data && response.data.access) {
@@ -99,6 +134,9 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    /**
+     * Logs out the current user and clears all authentication data.
+     */
     const logout = () => {
         setUser(null);
         setToken(null);
@@ -114,6 +152,12 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
+/**
+ * Hook to access authentication context.
+ * 
+ * @returns {Object} Authentication context value
+ * @throws {Error} When used outside of AuthProvider
+ */
 export const useAuth = () => {
     return useContext(AuthContext);
 };
